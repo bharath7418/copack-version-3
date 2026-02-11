@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile | Copack</title>
+  <link rel="stylesheet" href="{{  url_for('static', filename='css/student_profile.css')  }}">
+</head>
+<body>
+
+
+<nav class="navbar">
+  <div class="nav-left">
+    <a href="javascript:history.back()" class="back-btn">← Back</a>
+    <h2 class="logo">copack</h2>
+  </div>
+  <a href="#" class="logout">Logout</a>
+</nav>
+
+
+<section class="profile-layout">
+
+  
+  <div class="profile-card">
+    <div class="avatar"></div>
+    <h2>Madhan Kumar</h2>
+    <p class="username">@madhan_k</p>
+
+    <div class="stats">
+      <div>
+        <h3>142</h3>
+        <p>Solved</p>
+      </div>
+      <div>
+        <h3>5⭐</h3>
+        <p>Rating</p>
+      </div>
+      <div>
+        <h3>Gold</h3>
+        <p>Badge</p>
+      </div>
+    </div>
+
+    <button class="edit-btn">Edit Profile</button>
+  </div>
+
+  
+  <div class="content-card">
+
+   
+    <div class="tabs">
+      <input type="radio" name="tab" id="tab1" checked>
+      <label for="tab1">Overview</label>
+
+      <input type="radio" name="tab" id="tab2">
+      <label for="tab2">Skills</label>
+
+      <input type="radio" name="tab" id="tab3">
+      <label for="tab3">Activity</label>
+
+      
+      <div class="tab-content" id="content1">
+        <h3>Profile Details</h3>
+        <br>
+        <p><b>Email:</b> madhan@gmail.com</p>
+        <br>
+        <p><b>Location:</b> Chennai, India</p>
+        <br>
+        <p><b>Role:</b> Frontend Developer</p>
+      </div>
+
+      <div class="tab-content" id="content2">
+        <h3>Skills</h3>
+
+        <div class="skill">
+          <span>HTML</span>
+          <div class="bar"><div class="fill html"></div></div>
+        </div>
+
+        <div class="skill">
+          <span>CSS</span>
+          <div class="bar"><div class="fill css"></div></div>
+        </div>
+
+        <div class="skill">
+          <span>Java</span>
+          <div class="bar"><div class="fill java"></div></div>
+        </div>
+
+        <div class="skill">
+          <span>DSA</span>
+          <div class="bar"><div class="fill dsa"></div></div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="content3">
+        <h3>Recent Activity</h3>
+        <ul class="activity">
+          <li>Solved Two Sum problem</li>
+          <br>
+          <li>Earned Gold Badge in Java</li>
+          <br>
+          <li>Completed 7-day streak 🔥</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+</body>
+</html>

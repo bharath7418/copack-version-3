@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - COPACK</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .test-case-row {
+            transition: all 0.2s ease;
+        }
+        .table-responsive {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container-fluid bg-white shadow-sm mb-4 p-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h3 class="m-0 text-dark fw-bold">Admin Panel</h3>
+            <div>
+                <a href="/student_problem_view" class="btn btn-outline-primary btn-sm me-2">View Site</a>
+                <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="card-header bg-primary text-white fw-bold">Create Question</div>
+                    <div class="card-body">
+                        <form action="/admin/question_add" method="POST">
+                            <label class="small fw-bold mb-1">Question Identity</label>
+                            <input type="text" name="question_id" class="form-control mb-2" placeholder="e.g. Q101" required>
+                            
+                            <label class="small fw-bold mb-1">Title</label>
+                            <input type="text" name="title" class="form-control mb-2" placeholder="Question Title" required>
+                            
+                            <label class="small fw-bold mb-1">Description</label>
+                            <textarea name="description" class="form-control mb-3" placeholder="Problem Statement" rows="3"></textarea>
+                            
+                            <label class="small fw-bold mb-1">Formats & Constraints</label>
+                            <input type="text" name="input_format" class="form-control mb-2" placeholder="Input Format" required>
+                            <input type="text" name="constraints" class="form-control mb-2" placeholder="Constraints" required>
+                            <input type="text" name="output_format" class="form-control mb-2" placeholder="Output Format" required>
+
+                            <div id="test-cases-container" class="mb-3">
+                                <label class="fw-bold mb-2 text-primary">Test Cases</label>
+                                <div class="test-case-row border rounded p-2 mb-2 bg-light shadow-sm">
+                                    <input type="text" name="test_inputs[]" class="form-control form-control-sm mb-1" placeholder="Input Data" required>
+                                    <input type="text" name="test_outputs[]" class="form-control form-control-sm mb-1" placeholder="Expected Output" required>
+                                    <small class="text-muted" style="font-size: 0.7rem;">Sample Case (Hidden)</small>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-100 mb-3" onclick="addTestCase()">
+                                + Add Another Test Case
+                            </button>
+
+                            <label class="small fw-bold mb-1">Logic Explanation</label>
+                            <input type="text" name="explanation" class="form-control mb-2" placeholder="Brief Explanation" required>
+                            
+                            <label class="small fw-bold mb-1">Difficulty Level</label>
+                            <select class="form-select mb-3" name="difficulty">
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                                <option value="Creativity">Creativity</option>
+                            </select>
+
+                            <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm">Publish Question</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4 border-0">
+                    <div class="card-header bg-dark text-white fw-bold">Active Questions</div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Cases</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for q in questions %}
+                                <tr>
+                                    <td><span class="badge bg-secondary">{{ q.question_id }}</span></td>
+                                    <td class="fw-semibold">{{ q.title }}</td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">{{ q.test_cases|length }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/admin/update/{{ q.id }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="/admin/delete_question/{{ q.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this question?')">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-info text-white fw-bold">Inquiries</div>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>From</th>
+                                    <th>Message</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in messages %}
+                                <tr>
+                                    <td style="width: 30%;">
+                                        <strong>{{ m.name }}</strong><br>
+                                        <small class="text-muted">{{ m.email }}</small>
+                                    </td>
+                                    <td style="width: 55%;">{{ m.content }}</td>
+                                    <td class="text-center" style="width: 15%;">
+                                        <a href="/admin/delete_msg/{{ m.id }}" class="btn btn-outline-danger btn-sm py-0">Clear</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function addTestCase() {
+            const container = document.getElementById('test-cases-container');
+            const newRow = document.createElement('div');
+            newRow.className = 'test-case-row border rounded p-2 mb-2 bg-light shadow-sm';
+            newRow.innerHTML = `
+                <input type="text" name="test_inputs[]" class="form-control form-control-sm mb-1" placeholder="Input Data" required>
+                <input type="text" name="test_outputs[]" class="form-control form-control-sm mb-1" placeholder="Expected Output" required>
+                <button type="button" class="btn btn-danger btn-sm w-100 mt-1" style="font-size: 0.7rem;" onclick="this.parentElement.remove()">Remove Case</button>
+            `;
+            container.appendChild(newRow);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Upload File - COPACK</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .test-case-item {
+            transition: all 0.2s ease-in-out;
+        }
+        .question-header {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .custom-navbar {
+            background-color: #f8f9af;
+            border-bottom: 2px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar custom-navbar">
+        <div class="container-fluid">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">← Back</a>
+            <h2 class="navbar-brand mx-auto fw-bold">COPACK</h2>
+        </div>
+    </nav>
+
+    <h2 class="question-header">Enter the Question Details</h2>
+
+    <div class="container mt-4 mb-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <form action="/admin_question_add" method="post">
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Search Question by ID</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter Question ID (e.g. Q123)" name="search_id">
+                            <button class="btn btn-outline-primary" type="button">Search</button>
+                        </div>
+                        <small class="text-muted">Enter an existing ID to fetch and edit details</small>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-semibold">Question ID</label>
+                            <input class="form-control" name="question_id" required placeholder="e.g. Q101">
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label fw-semibold">Question Title</label>
+                            <input name="title" type="text" class="form-control" required placeholder="Main Title">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Problem Description</label>
+                        <textarea class="form-control" name="description" rows="4" required></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Input Format</label>
+                            <textarea class="form-control" name="input_format" rows="2" required></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Output Format</label>
+                            <textarea class="form-control" name="output_format" rows="2" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Constraints</label>
+                        <textarea class="form-control" name="constraints" rows="2" required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Explanation</label>
+                        <textarea class="form-control" name="explanation" rows="3" required placeholder="Explain the logic..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <label class="form-label fw-bold h5 mb-0">Test Cases</label>
+                            <button type="button" class="btn btn-sm btn-success" onclick="addTestCase()">+ Add Test Case</button>
+                        </div>
+                        
+                        <div id="test-cases-container">
+                            <div class="test-case-item border rounded p-3 mb-3 bg-light">
+                                <div class="row">
+                                    <div class="col-md-5 mb-2">
+                                        <label class="small fw-bold">Input Data</label>
+                                        <textarea class="form-control" name="test_inputs[]" rows="2" required></textarea>
+                                    </div>
+                                    <div class="col-md-5 mb-2">
+                                        <label class="small fw-bold">Expected Output</label>
+                                        <textarea class="form-control" name="test_outputs[]" rows="2" required></textarea>
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end mb-2">
+                                        <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeTestCase(this)">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <small class="text-muted">The first test case will be treated as the "Sample Case" by the system.</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Difficulty Level</label>
+                        <select class="form-select" name="difficulty" required>
+                            <option value="" selected disabled>Choose level...</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                            <option value="Creativity">Creativity</option>
+                        </select>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            Submit Question
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function addTestCase() {
+            const container = document.getElementById('test-cases-container');
+            const newCase = document.createElement('div');
+            newCase.className = 'test-case-item border rounded p-3 mb-3 bg-light shadow-sm';
+            newCase.innerHTML = `
+                <div class="row">
+                    <div class="col-md-5 mb-2">
+                        <label class="small fw-bold">Input Data</label>
+                        <textarea class="form-control" name="test_inputs[]" rows="2" required></textarea>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <label class="small fw-bold">Expected Output</label>
+                        <textarea class="form-control" name="test_outputs[]" rows="2" required></textarea>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end mb-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeTestCase(this)">Remove</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newCase);
+        }
+
+        function removeTestCase(button) {
+            const container = document.getElementById('test-cases-container');
+            if (container.children.length > 1) {
+                button.closest('.test-case-item').remove();
+            } else {
+                alert("You must provide at least one test case.");
+            }
+        }
+    </script>
+</body>
+
+</html>
