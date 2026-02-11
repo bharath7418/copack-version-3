@@ -121,29 +121,20 @@
                         </table>
                     </div>
                 </div>
+                
 
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-info text-white fw-bold">Inquiries</div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">Contact Form Inquiries</div>
                     <div class="table-responsive">
-                        <table class="table table-sm align-middle">
-                            <thead>
-                                <tr>
-                                    <th>From</th>
-                                    <th>Message</th>
-                                    <th class="text-center">Action</th>
-                                </tr>
-                            </thead>
+                        <table class="table table-sm">
+                            <thead><tr><th>From</th><th>Message</th><th>Action</th></tr></thead>
                             <tbody>
                                 {% for m in messages %}
                                 <tr>
-                                    <td style="width: 30%;">
-                                        <strong>{{ m.name }}</strong><br>
-                                        <small class="text-muted">{{ m.email }}</small>
-                                    </td>
-                                    <td style="width: 55%;">{{ m.content }}</td>
-                                    <td class="text-center" style="width: 15%;">
-                                        <a href="/admin/delete_msg/{{ m.id }}" class="btn btn-outline-danger btn-sm py-0">Clear</a>
-                                    </td>
+                                    <td><strong>{{ m.name }}</strong><br><small>{{ m.email }}</small></td>
+                                    <td>{{ m.content }}</td>
+                                    <td><a href="/admin/delete_msg/{{ m.id }}" class="text-danger">Clear</a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

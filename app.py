@@ -185,6 +185,29 @@ def delete_question(id):
     db.session.commit()
     return redirect(url_for('admin_panel'))
 
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        # 1. Collect data from the form
+        name = request.form.get('name')
+        email = request.form.get('email')
+        content = request.form.get('content')
+
+        # 2. Create a new Message object
+        new_message = Message(name=name, email=email, content=content)
+
+        # 3. Add to session and save to the database
+        db.session.add(new_message)
+        db.session.commit()
+
+        flash('Message Successfully Sent!')
+        return redirect(url_for('student_problem_view'))
+
+    # If GET, just fetch messages or render the page
+    messages = Message.query.all()
+    return render_template('contact.html', messages=messages)
+
+
 @app.route('/admin/delete_msg/<int:id>')
 @login_required
 def delete_msg(id):
