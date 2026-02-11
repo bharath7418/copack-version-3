@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .btn-primary {
+            background-color: #4e73df;
+            border: none;
+            padding: 10px 25px;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            transform: translateY(-1px);
+        }
+        .section-title {
+            border-left: 5px solid #4e73df;
+            padding-left: 15px;
+            margin-bottom: 25px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <h2 class="section-title">Account Details</h2>
+        
+        <form action="/student_basic_details" method="POST">
+            <div class="row g-3">
+                <div class="col-md-6">  
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="johndoe123" required>
+                </div>
+
+                <div class="col-12">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+
+                <h2 class="section-title mt-5">Academic & Stats</h2>
+
+                <div class="col-md-6">
+                    <label for="department" class="form-label">Department</label>
+                    <select class="form-select" id="department" name="department">
+                        <option selected disabled>Choose...</option>
+                        <option value="CS">Computer Science</option>
+                        <option value="IT">Information Technology</option>
+                        <option value="EE">Electrical Engineering</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="year" class="form-label">Year of Study</label>
+                    <input type="number" class="form-control" id="year" name="year" placeholder="e.g. 2024">
+                </div>
+
+                <div class="col-md-4">
+                    <label for="solved" class="form-label">Problems Solved</label>
+                    <input type="number" class="form-control" id="solved" name="solved" placeholder="0">
+                </div>
+
+                <div class="col-md-4">
+                    <label for="rating" class="form-label">Current Rating</label>
+                    <input type="number" class="form-control" id="rating" name="rating" placeholder="1200">
+                </div>
+
+                <div class="col-md-4">
+                    <label for="badge" class="form-label">Earned Badge</label>
+                    <select class="form-select" id="badge" name="badge">
+                        <option value="none">None</option>
+                        <option value="gold">Gold</option>
+                        <option value="silver">Silver</option>
+                        <option value="bronze">Bronze</option>
+                    </select>
+                </div>
+
+                <div class="col-12 mt-4 text-end">
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

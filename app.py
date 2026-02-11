@@ -5,7 +5,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import subprocess, uuid, os
 import os
 from flask_migrate import Migrate
-import json
+
 
 
 app = Flask(__name__)
@@ -55,6 +55,31 @@ class TestCase(db.Model):
     # Foreign Key linking back to Question.id
     question_root_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
     
+ 
+class Student(db.Model):
+    # Fixed primary_key typo (lowercase 'y')
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    username = db.Column(db.String(15), unique=True) # Good idea to make this unique
+    password = db.Column(db.String(100)) # Increased size for future hashing
+    # Fixed: Removed the extra db.Column() wrapper
+    department = db.Column(db.String(60))
+    year = db.Column(db.String(60))
+    solved = db.Column(db.Integer)
+    rating = db.Column(db.Integer)
+    badge = db.Column(db.String(20))
+
+@login_manager.user_loader
+def load_user(user_id):
+    student = Student.query.all()
+    return Student.query.get(int(user_id))
+
+with app.app_context():
+    db.create_all()
+    if not Student.query.filter_by(username='username').first():
+        db.session.add(Student(username='username', password='password'))
+        db.session.commit()
+    
     
 @login_manager.user_loader
 def load_user(user_id):
@@ -70,6 +95,26 @@ with app.app_context():
 def home():
     return render_template('start_page.html')
 
+@app.route('/student_basic_details',methods=['POST'])
+def student_basic_details() :
+    students = Student.query.all()
+    if (request.method=='POST') :
+        new_student = Student(
+            name=request.form.get('name'),
+            username=request.form.get('username'),
+            password=request.form.get('password'),
+            department=request.form.get('department'),
+            year=int(request.form.get('year', 0)),
+            solved=int(request.form.get('solved', 0)),
+            rating=int(request.form.get('rating', 0)),
+            badge=request.form.get('badge')
+        )
+        db.session.add(new_student)
+        db.session.commit()
+    
+    return redirect(url_for('student_login'))
+        
+    
 
 @app.route('/student_login',methods = ['GET' , 'POST'])
 def student_login() :
