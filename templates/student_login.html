@@ -13,7 +13,7 @@
                     <input type="text" name="username" class="form-control mb-3" placeholder="Username" required>
                     <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
                     <button class="btn btn-dark w-100 mb-3">Login</button>
-                    <a href="/student_basic_details" class="d-block text-center text-muted small">New Student SignUp</a>
+                    <a href="{{ url_for('student_signup') }}" class="d-block text-center text-muted small">New Student SignUp</a>
                     <a href="/" class="d-block text-center text-muted small">Return to Homepage</a>
                 </form>
             </div>

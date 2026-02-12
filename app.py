@@ -5,6 +5,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import subprocess, uuid, os
 import os
 from flask_migrate import Migrate
+from flask import request
 
 
 
@@ -56,7 +57,7 @@ class TestCase(db.Model):
     question_root_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
     
  
-class Student(db.Model):
+class Student(UserMixin, db.Model):
     # Fixed primary_key typo (lowercase 'y')
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
@@ -71,8 +72,10 @@ class Student(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    student = Student.query.all()
-    return Student.query.get(int(user_id))
+    student = Student.query.get(int(user_id))
+    if student:
+        return student
+    return User.query.get(int(user_id))
 
 with app.app_context():
     db.create_all()
@@ -87,45 +90,85 @@ def load_user(user_id):
 
 with app.app_context():
     db.create_all()
+    # Initial Student
+    if not Student.query.filter_by(username='username').first():
+        db.session.add(Student(username='username', password='password', name="Default Student"))
+    
+    # Initial Admin
     if not User.query.filter_by(username='arun').first():
         db.session.add(User(username='arun', password='arun123'))
-        db.session.commit()
-
+        
+    db.session.commit()
+    
+    
+    
 @app.route('/')
 def home():
     return render_template('start_page.html')
 
-@app.route('/student_basic_details',methods=['POST'])
-def student_basic_details() :
-    students = Student.query.all()
-    if (request.method=='POST') :
+
+
+
+@app.route('/student_signup', methods=['GET', 'POST'])
+def student_signup():
+    if request.method == 'POST':
+        # Create a small helper to handle empty strings
+        def safe_int(value, default=0):
+            if value and value.strip():
+                try:
+                    return int(value)
+                except ValueError:
+                    return default
+            return default
+
         new_student = Student(
             name=request.form.get('name'),
             username=request.form.get('username'),
             password=request.form.get('password'),
             department=request.form.get('department'),
-            year=int(request.form.get('year', 0)),
-            solved=int(request.form.get('solved', 0)),
-            rating=int(request.form.get('rating', 0)),
+            # Wrap numeric fields in safe_int
+            year=safe_int(request.form.get('year')),
+            solved=safe_int(request.form.get('solved')),
+            rating=safe_int(request.form.get('rating')),
             badge=request.form.get('badge')
         )
+        
         db.session.add(new_student)
         db.session.commit()
+        return redirect(url_for('student_login'))
     
-    return redirect(url_for('student_login'))
-        
-    
+    return render_template('student_signup.html')        
 
-@app.route('/student_login',methods = ['GET' , 'POST'])
-def student_login() :
-    questions = Question.query.all()
+
+@app.route('/student_login', methods=['GET', 'POST'])
+def student_login():
+    # If the user is already logged in, don't show the login page
+    if current_user.is_authenticated:
+        return redirect(url_for('student_problem_view'))
     if request.method == 'POST':
-        user = User.query.filter_by(username=request.form.get('username')).first()
-        if user and user.password == request.form.get('password'):
-            login_user(user)
-            return redirect(url_for('student_problem_view'))
-        flash('Invalid Credentials')
+        user_in = request.form.get('username')
+        pass_in = request.form.get('password')
+
+        student = Student.query.filter_by(username=user_in).first()
+
+        if student and student.password == pass_in:
+            login_user(student)
+            
+            # 1. Check if there was a 'next' page the user wanted to visit
+            next_page = request.args.get('next')
+            
+            # 2. Redirect to 'next' if it exists, otherwise go to problem view
+            # (Adding a check to ensure next_page is a relative path for security)
+            if not next_page or not next_page.startswith('/'):
+                next_page = url_for('student_problem_view')
+                
+            flash(f"Welcome, {student.name}!", "success")
+            return redirect(next_page)
+        else:
+            flash("Invalid username or password.", "danger")
+
     return render_template('student_login.html')
+
 
 @app.route('/student_problem_view')
 @login_required
@@ -152,7 +195,7 @@ def admin_panel():
     messages = Message.query.all()
     questions = Question.query.all()
     return render_template('admin.html',  messages=messages, questions=questions)
-from flask import request
+
 
 @app.route('/admin/question_add', methods=['POST'])
 def admin_question_add():
