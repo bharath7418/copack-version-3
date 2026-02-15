@@ -62,8 +62,7 @@ class Student(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     username = db.Column(db.String(15), unique=True) # Good idea to make this unique
-    password = db.Column(db.String(100)) # Increased size for future hashing
-    # Fixed: Removed the extra db.Column() wrapper
+    password = db.Column(db.String(100)) 
     department = db.Column(db.String(60))
     year = db.Column(db.String(60))
     solved = db.Column(db.Integer)
@@ -126,6 +125,7 @@ def student_signup():
             username=request.form.get('username'),
             password=request.form.get('password'),
             department=request.form.get('department'),
+            email = request.form.get('email'),
             # Wrap numeric fields in safe_int
             year=safe_int(request.form.get('year')),
             solved=safe_int(request.form.get('solved')),
@@ -154,11 +154,8 @@ def student_login():
         if student and student.password == pass_in:
             login_user(student)
             
-            # 1. Check if there was a 'next' page the user wanted to visit
             next_page = request.args.get('next')
             
-            # 2. Redirect to 'next' if it exists, otherwise go to problem view
-            # (Adding a check to ensure next_page is a relative path for security)
             if not next_page or not next_page.startswith('/'):
                 next_page = url_for('student_problem_view')
                 
@@ -170,23 +167,27 @@ def student_login():
     return render_template('student_login.html')
 
 
-@app.route('/student_problem_view')
-@login_required
+@app.route('/student_problem_view',methods = ['GET','POST'])
 def student_problem_view() :
+    
     questions = Question.query.all()
+    student = Student.query.all()
     return render_template("student_problem_view.html", questions=questions)
 
+@app.route('/student_profile/<string:username>',methods=['GET','POST'])
+def student_profile(username):
+    # Use filter_by because username is not the Primary Key
+    student = Student.query.filter_by(username=username).first_or_404()
+    return render_template('student_profile.html', student=student)
 
-@app.route('/student_profile')
-def student_profile ():
-    return render_template('student_profile.html')
 
 @app.route('/solve_and_compiler_page/<int:id>')
 def solve_and_compiler_page(id):
     q = Question.query.get_or_404(id)
+    test_cases = TestCase.query.all()
     # REMOVE: cases = json.loads(q.test_cases) <--- This was the cause of the error
     
-    return render_template('solve_and_compiler_page.html', q=q)
+    return render_template('solve_and_compiler_page.html', q=q, test_cases=test_cases)
 
   
 @app.route('/admin')
