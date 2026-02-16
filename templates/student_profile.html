@@ -1,111 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-  <title>Profile | Copack</title>
-  <link rel="stylesheet" href="{{  url_for('static', filename='css/student_profile.css')  }}">
+  <title>Profile | {{ student.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/student_profile.css') }}">
 </head>
-
 <body>
-
 
   <nav class="navbar">
     <div class="nav-left">
       <a href="javascript:history.back()" class="back-btn">← Back</a>
       <h2 class="logo">copack</h2>
     </div>
-    <a href="#" class="logout">Logout</a>
+    <a href="/logout" class="logout">Logout</a>
   </nav>
 
-
-  <section class="profile-layout">
-
-
+  <div class="profile-container">
     <div class="tab-content" id="content1">
-      <h3>Profile Details</h3>
-      <br>
-      <p><b>Name:</b> {{ student.name }}</p>
-      <br>
-      <p><b>Department:</b> {{ student.department }}</p>
-      <br>
-      <p><b>Current Rating:</b> {{ student.rating }}</p>
-      <br>
-      <p><b>Badge:</b> {{ student.badge }}</p>
+        <h3>Student Profile: {{ student.username }}</h3>
+        <hr>
+        
+        <p><b>Name:</b> {{ student.name }}</p>
+        <p><b>Department:</b> {{ student.department }}</p>
+        <p><b>Year:</b> {{ student.year }}</p>
+        
+        <div class="stats-box">
+            <p><b>Problems Solved:</b> {{ student.solved or 0 }}</p>
+            <p><b>Current Rating:</b> {{ student.rating or 'N/A' }}</p>
+            <p><b>Badge:</b> 
+                <span class="badge-display">{{ student.badge or 'No Badge' }}</span>
+            </p>
+        </div>
     </div>
+  </div>
 
-    <div class="content-card">
-
-
-      <div class="tabs">
-        <input type="radio" name="tab" id="tab1" checked>
-        <label for="tab1">Overview</label>
-
-        <input type="radio" name="tab" id="tab2">
-        <label for="tab2">Skills</label>
-
-        <input type="radio" name="tab" id="tab3">
-        <label for="tab3">Activity</label>
-
-
-        <div class="tab-content" id="content1">
-          <h3>Profile Details</h3>
-          <br>
-          <p><b>Email:</b> madhan@gmail.com</p>
-          <br>
-          <p><b>Location:</b> Chennai, India</p>
-          <br>
-          <p><b>Role:</b> Frontend Developer</p>
-        </div>
-
-        <div class="tab-content" id="content2">
-          <h3>Skills</h3>
-
-          <div class="skill">
-            <span>HTML</span>
-            <div class="bar">
-              <div class="fill html"></div>
-            </div>
-          </div>
-
-          <div class="skill">
-            <span>CSS</span>
-            <div class="bar">
-              <div class="fill css"></div>
-            </div>
-          </div>
-
-          <div class="skill">
-            <span>Java</span>
-            <div class="bar">
-              <div class="fill java"></div>
-            </div>
-          </div>
-
-          <div class="skill">
-            <span>DSA</span>
-            <div class="bar">
-              <div class="fill dsa"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="tab-content" id="content3">
-          <h3>Recent Activity</h3>
-          <ul class="activity">
-            <li>Solved Two Sum problem</li>
-            <br>
-            <li>Earned Gold Badge in Java</li>
-            <br>
-            <li>Completed 7-day streak 🔥</li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-
-  </section>
+  <h1>hello</h1>
+  <h2>world</h2>
 
 </body>
-
 </html>

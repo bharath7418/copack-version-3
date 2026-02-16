@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>CRUD</title>
+    <title>Copact Problem</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/student_problem_view.css') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,12 +18,20 @@
     <body class="bg-light">
         <nav class="navbar navbar-dark bg-dark mb-4">
             <div class="container">
-                <a class="navbar-brand font-weight-bold" href="#">Co-Pack</a>
-                <!-- <a href="{{ url_for('student_profile', username=current_user.username) }}" class="btn btn-outline-light btn-sm">Profile</a> -->
-                <a href="{{ url_for('student_profile', username=current_user.username) }}">Profile</a>
+                <a class="navbar-brand font-weight-bold" href="#">Co-Pack-New</a>
+
+
+
                 <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+
             </div>
         </nav>
+        
+        <!-- {% for s in student %}
+        <a href="{{ url_for('student_profile', username=s.username) }}">View Profile</a>
+        
+        <h5>{{ s.username }}</h5>
+        {% endfor %} -->
 
         <div class="container">
             {% with messages = get_flashed_messages() %}
@@ -31,8 +39,8 @@
             %}
             {% endwith %}
 
-            
-            
+
+
 
             <div class="row">
                 <div class="col-md-8">
@@ -69,6 +77,12 @@
                 </div>
             </div>
         </div>
+
+
+
+        
+
+        
     </body>
 
 </html>

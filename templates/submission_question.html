@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Max Product of Array - 1464</title>
+    <link rel="stylesheet" href="v.css">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="left">
+            <h1>Max Product of Array - 1464</h1>
+            <span class="lock">🔒 locked</span>
+        </div>
+
+        <div class="tabs">
+            <span>Problem</span>
+            <span class="active">Submissions</span>
+            <span>Leaderboard</span>
+            <span>Discussions</span>
+        </div>
+    </div>
+
+    <!-- INFO ROW -->
+    <div class="info-row">
+        <span>Submitted 4 days ago • Score: <b>10.00</b></span>
+        <span class="status">Accepted</span>
+    </div>
+
+    <!-- TEST CASES -->
+    <div class="testcases">
+        <span>✔ Test Case #0</span>
+        <span>✔ Test Case #1</span>
+        <span>✔ Test Case #2</span>
+        <span>✔ Test Case #3</span>
+        <span>✔ Test Case #4</span>
+    </div>
+
+    <!-- CODE SECTION -->
+    <div class="code-section">
+        <div class="code-header">
+            <span>Submitted Code • <b>Java 8</b></span>
+            <a href="#">Open in editor</a>
+        </div>
+
+        <pre class="code">
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int n = scan.nextInt();
+        int[] arr = new int[n];
+
+        for(int i = 0; i < n; i++) {
+            arr[i] = scan.nextInt();
+        }
+
+        Arrays.sort(arr);
+        int result = (arr[n-1]-1) * (arr[n-2]-1);
+        System.out.println(result);
+    }
+}
+        </pre>
+    </div>
+
+</div>
+
+</body>
+</html>

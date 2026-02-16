@@ -62,7 +62,8 @@ class Student(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     username = db.Column(db.String(15), unique=True) # Good idea to make this unique
-    password = db.Column(db.String(100)) 
+    password = db.Column(db.String(100))
+    email = db.Column(db.String(50)) 
     department = db.Column(db.String(60))
     year = db.Column(db.String(60))
     solved = db.Column(db.Integer)
@@ -140,6 +141,25 @@ def student_signup():
     return render_template('student_signup.html')        
 
 
+from flask import Flask, render_template, url_for
+# Assuming your db and Student model are already defined/imported
+# from models import db, Student 
+
+@app.route('/students')
+def student_list():
+    # Fetch all student records from the database
+    all_students = Student.query.all()
+    
+    # Pass the list to the template
+    # Note: 'student' matches the variable name in your {% for s in student %}
+    return render_template('students.html', student=all_students)
+
+@app.route('/profile/<string:username>',methods=['GET','POST'])
+def student_profile(username):
+    # Use filter_by because 'username' is a string column, not the primary key ID
+    student = Student.query.filter_by(username=username).first_or_404()
+    return render_template('student_profile.html', student=student)
+
 @app.route('/student_login', methods=['GET', 'POST'])
 def student_login():
     # If the user is already logged in, don't show the login page
@@ -169,25 +189,18 @@ def student_login():
 
 @app.route('/student_problem_view',methods = ['GET','POST'])
 def student_problem_view() :
-    
     questions = Question.query.all()
     student = Student.query.all()
-    return render_template("student_problem_view.html", questions=questions)
-
-@app.route('/student_profile/<string:username>',methods=['GET','POST'])
-def student_profile(username):
-    # Use filter_by because username is not the Primary Key
-    student = Student.query.filter_by(username=username).first_or_404()
-    return render_template('student_profile.html', student=student)
+    return render_template("student_problem_view.html", questions=questions, student=student)
 
 
 @app.route('/solve_and_compiler_page/<int:id>')
 def solve_and_compiler_page(id):
     q = Question.query.get_or_404(id)
     test_cases = TestCase.query.all()
-    # REMOVE: cases = json.loads(q.test_cases) <--- This was the cause of the error
-    
     return render_template('solve_and_compiler_page.html', q=q, test_cases=test_cases)
+
+
 
   
 @app.route('/admin')
